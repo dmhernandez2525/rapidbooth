@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap');
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans text-slate-blue bg-cream antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24;
+  }
+
+  .container-narrow {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .gradient-green {
+    @apply bg-gradient-to-br from-forest-green-900 to-forest-green-700;
+  }
+
+  .gradient-gold {
+    @apply bg-gradient-to-r from-harvest-gold-500 to-harvest-gold-600;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-forest-green to-forest-green-700;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-lg border border-cream-200 p-6 sm:p-8 transition-all duration-300 hover:shadow-xl;
+  }
+
+  .card-hover {
+    @apply hover:-translate-y-1 hover:shadow-2xl;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
