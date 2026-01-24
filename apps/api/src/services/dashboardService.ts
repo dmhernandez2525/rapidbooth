@@ -1,4 +1,7 @@
+import crypto from "crypto";
+
 export type ClientStatus = "lead" | "prospect" | "active" | "churned";
+export const VALID_CLIENT_STATUSES: ClientStatus[] = ["lead", "prospect", "active", "churned"];
 
 export interface ClientRecord {
   id: string;
@@ -56,7 +59,7 @@ const clients = new Map<string, ClientRecord>();
 const sessions: DashboardSession[] = [];
 
 function generateId(): string {
-  return `client_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `client_${crypto.randomUUID()}`;
 }
 
 // Seed demo data
@@ -105,10 +108,19 @@ export function getRepMetrics(): RepMetrics {
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   });
 
+  // Conversion rate: completed sessions that led to active/prospect clients vs total completed
+  const convertedSessions = completedSessions.filter((s) => s.clientStatus === "active").length;
+  const conversionRate = completedSessions.length > 0
+    ? Math.round((convertedSessions / completedSessions.length) * 100)
+    : 0;
+
+  // This month's revenue: sum of monthly revenue from all currently active clients
+  const thisMonthRevenue = active.reduce((sum, c) => sum + c.monthlyRevenue, 0);
+
   return {
     totalSessions: sessions.length,
     completedSessions: completedSessions.length,
-    conversionRate: sessions.length > 0 ? Math.round((active.length / sessions.length) * 100) : 0,
+    conversionRate,
     totalRevenue: active.reduce((sum, c) => sum + c.monthlyRevenue, 0),
     activeClients: active.length,
     avgSessionDuration: completedSessions.length > 0
@@ -116,11 +128,7 @@ export function getRepMetrics(): RepMetrics {
       : 0,
     sitesDeployed: active.length,
     thisMonthSessions: thisMonth.length,
-    thisMonthRevenue: active.filter((c) => {
-      const d = new Date(c.createdAt);
-      const now = new Date();
-      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-    }).reduce((sum, c) => sum + c.monthlyRevenue, 0),
+    thisMonthRevenue,
   };
 }
 

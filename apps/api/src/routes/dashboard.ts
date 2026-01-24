@@ -6,6 +6,7 @@ import {
   getDashboardSessions,
   getClients,
   updateClientStatus,
+  VALID_CLIENT_STATUSES,
 } from "../services/dashboardService";
 import type { ClientStatus } from "../services/dashboardService";
 
@@ -78,15 +79,18 @@ router.get("/clients", (req: Request, res: Response) => {
 router.patch("/clients/:clientId/status", (req: Request, res: Response) => {
   try {
     const { status } = req.body;
-    if (!status) {
-      res.status(400).json({ error: "status is required" });
+    if (!status || !VALID_CLIENT_STATUSES.includes(status as ClientStatus)) {
+      res.status(400).json({
+        error: `status is required and must be one of: ${VALID_CLIENT_STATUSES.join(", ")}`,
+      });
       return;
     }
     const client = updateClientStatus(req.params.clientId, status as ClientStatus);
     res.json({ client });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to update client";
-    res.status(400).json({ error: message });
+    const status = message.includes("not found") ? 404 : 400;
+    res.status(status).json({ error: message });
   }
 });
 
