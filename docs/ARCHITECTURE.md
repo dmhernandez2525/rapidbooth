@@ -94,8 +94,10 @@ All API endpoints are prefixed with `/api`:
 | POST | `/api/intake/start` | Start intake session |
 | POST | `/api/intake/message` | Send message in session |
 | GET | `/api/intake/:id` | Get session state |
-| POST | `/api/sites/generate` | Generate site from intake |
-| GET | `/api/sites/:id/preview` | Get site preview |
+| POST | `/api/sites/generate` | Generate site from intake session |
+| POST | `/api/sites/generate-direct` | Generate site from business data |
+| GET | `/api/sites/:id` | Get generated site config |
+| GET | `/api/sites` | List all generated sites |
 | POST | `/api/sites/:id/deploy` | Deploy generated site |
 | GET | `/api/dashboard/sessions` | List rep sessions |
 | GET | `/api/dashboard/analytics` | Dashboard analytics |

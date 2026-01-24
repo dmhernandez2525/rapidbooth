@@ -1,16 +1,18 @@
 import { Router } from "express";
 import healthRouter from "./health";
 import intakeRouter from "./intake";
+import sitesRouter from "./sites";
 
 const router = Router();
 
 router.use(healthRouter);
 router.use("/intake", intakeRouter);
+router.use("/sites", sitesRouter);
 
 router.get("/", (_req, res) => {
   res.json({
     service: "RapidBooth API",
-    version: "0.1.0",
+    version: "0.2.0",
     endpoints: {
       health: "/api/health",
       intake: {
@@ -18,6 +20,12 @@ router.get("/", (_req, res) => {
         message: "POST /api/intake/message",
         session: "GET /api/intake/:sessionId",
         list: "GET /api/intake",
+      },
+      sites: {
+        generate: "POST /api/sites/generate",
+        generateDirect: "POST /api/sites/generate-direct",
+        get: "GET /api/sites/:siteId",
+        list: "GET /api/sites",
       },
     },
   });
