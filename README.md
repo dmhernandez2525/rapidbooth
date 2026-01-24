@@ -103,7 +103,7 @@ The project deploys to Render via the `render.yaml` blueprint:
 | 4. Live Preview | Complete | Real-time site preview during builds |
 | 5. Deployment Service | Complete | Auto-deploy generated sites |
 | 6. Rep Dashboard | Complete | Sales session & pipeline tracking |
-| 7. Billing | Planned | Stripe subscription management |
+| 7. Billing | Complete | Stripe subscription management |
 | 8. Scheduling | Planned | Appointment booking system |
 | 9. Reviews | Planned | Multi-platform review aggregation |
 | 10. Content Editor | Planned | WYSIWYG self-service editing |

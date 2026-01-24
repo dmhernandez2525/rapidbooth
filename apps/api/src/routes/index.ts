@@ -4,6 +4,7 @@ import intakeRouter from "./intake";
 import sitesRouter from "./sites";
 import deploymentsRouter from "./deployments";
 import dashboardRouter from "./dashboard";
+import billingRouter from "./billing";
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.use("/intake", intakeRouter);
 router.use("/sites", sitesRouter);
 router.use("/deployments", deploymentsRouter);
 router.use("/dashboard", dashboardRouter);
+router.use("/billing", billingRouter);
 
 router.get("/", (_req, res) => {
   res.json({
