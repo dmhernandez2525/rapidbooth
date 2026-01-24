@@ -6,7 +6,7 @@
 |-------|---------|----------|--------|
 | 1 | Project Foundation & Marketing Site | P0 | Complete |
 | 2 | Conversational Intake Engine | P0 | Complete |
-| 3 | AI Site Generator | P0 | Planned |
+| 3 | AI Site Generator | P0 | Complete |
 | 4 | Live Preview System | P0 | Planned |
 | 5 | Deployment Service | P0 | Planned |
 | 6 | Rep Dashboard & Analytics | P1 | Planned |
@@ -58,15 +58,21 @@ AI-powered business discovery through natural conversation. Uses Claude API to g
 
 ## Phase 3: AI Site Generator
 
+**Status:** Complete
+
 ### Description
 Component library with vertical-specific templates assembled dynamically based on intake data. Claude API generates content tailored to the business.
 
-### Key Features
-- Component library (hero, nav, footer, contact, services, gallery, testimonials, about)
+### Deliverables
+- Site generation service with template detection and component assembly
 - 4 vertical templates (home services, restaurant, professional services, retail)
-- AI-generated content (headlines, descriptions, CTAs)
-- Theme customization (colors, fonts, spacing)
-- Responsive output
+- Claude API content generation with per-template default fallbacks
+- Theme engine with color schemes, font families, and border radius per style
+- REST API endpoints (generate, generate-direct, get, list)
+- Frontend site renderer with 8 section components (navbar, hero, about, services, testimonials, contact, gallery, booking, footer)
+- Interactive preview page with device toggle (desktop/tablet/mobile)
+- Sample site demos for each vertical template
+- Intake-to-preview flow with completion CTA
 
 ---
 

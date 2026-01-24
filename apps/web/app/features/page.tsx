@@ -222,9 +222,14 @@ export default function FeaturesPage() {
             Start a conversation with our AI and watch your website come to
             life in under 30 minutes.
           </p>
-          <Button variant="primary" size="lg" href="/contact">
-            Start Building Today
-          </Button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button variant="primary" size="lg" href="/demo">
+              Start Building Today
+            </Button>
+            <Button variant="secondary" size="lg" href="/demo/preview">
+              View Sample Sites
+            </Button>
+          </div>
         </div>
       </section>
     </div>
