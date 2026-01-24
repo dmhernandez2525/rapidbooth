@@ -5,7 +5,7 @@ import {
   getDeploymentBySite,
   getAllDeployments,
   stopDeployment,
-  redeployment,
+  redeploy,
   updateCustomDomain,
   getDeploymentStats,
 } from "../services/deploymentService";
@@ -17,8 +17,18 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const { siteId, subdomain, customDomain } = req.body;
 
-    if (!siteId) {
-      res.status(400).json({ error: "siteId is required" });
+    if (!siteId || typeof siteId !== "string") {
+      res.status(400).json({ error: "siteId is required and must be a string" });
+      return;
+    }
+
+    if (subdomain !== undefined && (typeof subdomain !== "string" || !/^[a-z0-9-]+$/.test(subdomain) || subdomain.length > 32)) {
+      res.status(400).json({ error: "subdomain must be lowercase alphanumeric with hyphens, max 32 chars" });
+      return;
+    }
+
+    if (customDomain !== undefined && (typeof customDomain !== "string" || customDomain.length > 253)) {
+      res.status(400).json({ error: "customDomain must be a valid domain string" });
       return;
     }
 
@@ -26,7 +36,8 @@ router.post("/", async (req: Request, res: Response) => {
     res.status(201).json({ deployment });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to create deployment";
-    res.status(400).json({ error: message });
+    const status = message.includes("Maximum") ? 429 : 400;
+    res.status(status).json({ error: message });
   }
 });
 
@@ -86,7 +97,7 @@ router.post("/:deploymentId/stop", (req: Request, res: Response) => {
 // Redeploy a stopped deployment
 router.post("/:deploymentId/redeploy", (req: Request, res: Response) => {
   try {
-    const deployment = redeployment(req.params.deploymentId);
+    const deployment = redeploy(req.params.deploymentId);
     res.json({ deployment });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to redeploy";
@@ -98,8 +109,8 @@ router.post("/:deploymentId/redeploy", (req: Request, res: Response) => {
 router.patch("/:deploymentId/domain", (req: Request, res: Response) => {
   try {
     const { customDomain } = req.body;
-    if (!customDomain) {
-      res.status(400).json({ error: "customDomain is required" });
+    if (!customDomain || typeof customDomain !== "string" || customDomain.length > 253) {
+      res.status(400).json({ error: "customDomain is required and must be a valid domain string" });
       return;
     }
     const deployment = updateCustomDomain(req.params.deploymentId, customDomain);

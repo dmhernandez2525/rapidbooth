@@ -1,5 +1,8 @@
-import type { GeneratedSite } from "./siteGenerator";
+import crypto from "crypto";
 import { getSite } from "./siteGenerator";
+
+const MAX_DEPLOYMENTS = 200;
+const DEPLOYMENT_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 export type DeploymentStatus = "queued" | "building" | "provisioning_ssl" | "configuring_dns" | "deploying" | "live" | "stopped" | "failed";
 
@@ -34,8 +37,18 @@ export interface DeploymentRequest {
 const deployments = new Map<string, Deployment>();
 const siteToDeployment = new Map<string, string>();
 
+function evictExpiredDeployments(): void {
+  const now = Date.now();
+  for (const [id, deployment] of deployments) {
+    if (now - new Date(deployment.createdAt).getTime() > DEPLOYMENT_TTL_MS) {
+      deployments.delete(id);
+      siteToDeployment.delete(deployment.siteId);
+    }
+  }
+}
+
 function generateId(): string {
-  return `deploy_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `deploy_${crypto.randomUUID()}`;
 }
 
 function slugify(name: string): string {
@@ -95,9 +108,14 @@ async function simulateDeploymentPipeline(deploymentId: string): Promise<void> {
 }
 
 export async function createDeployment(request: DeploymentRequest): Promise<Deployment> {
+  evictExpiredDeployments();
+
+  if (deployments.size >= MAX_DEPLOYMENTS) {
+    throw new Error("Maximum deployments reached. Please try again later.");
+  }
+
   const site = getSite(request.siteId);
 
-  // Generate subdomain from business name or use provided
   let subdomain = request.subdomain;
   if (!subdomain) {
     if (site) {
@@ -107,7 +125,6 @@ export async function createDeployment(request: DeploymentRequest): Promise<Depl
     }
   }
 
-  // Check if site already has a deployment
   const existingId = siteToDeployment.get(request.siteId);
   if (existingId) {
     const existing = deployments.get(existingId);
@@ -134,8 +151,13 @@ export async function createDeployment(request: DeploymentRequest): Promise<Depl
   deployments.set(deployment.id, deployment);
   siteToDeployment.set(request.siteId, deployment.id);
 
-  // Start async deployment pipeline
-  simulateDeploymentPipeline(deployment.id);
+  simulateDeploymentPipeline(deployment.id).catch((err) => {
+    const d = deployments.get(deployment.id);
+    if (d) {
+      d.status = "failed";
+      addLogEntry(d, `Deployment failed: ${err instanceof Error ? err.message : "Unknown error"}`, "error");
+    }
+  });
 
   return deployment;
 }
@@ -166,7 +188,7 @@ export function stopDeployment(deploymentId: string): Deployment {
   return deployment;
 }
 
-export function redeployment(deploymentId: string): Deployment {
+export function redeploy(deploymentId: string): Deployment {
   const deployment = deployments.get(deploymentId);
   if (!deployment) throw new Error("Deployment not found");
   if (deployment.status !== "stopped") throw new Error("Can only redeploy stopped deployments");
@@ -175,7 +197,13 @@ export function redeployment(deploymentId: string): Deployment {
   deployment.stoppedAt = undefined;
   addLogEntry(deployment, "Redeployment initiated");
 
-  simulateDeploymentPipeline(deploymentId);
+  simulateDeploymentPipeline(deploymentId).catch((err) => {
+    const d = deployments.get(deploymentId);
+    if (d) {
+      d.status = "failed";
+      addLogEntry(d, `Redeployment failed: ${err instanceof Error ? err.message : "Unknown error"}`, "error");
+    }
+  });
 
   return deployment;
 }
