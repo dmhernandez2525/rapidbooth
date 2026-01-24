@@ -12,8 +12,8 @@
 | 6 | Rep Dashboard & Analytics | P1 | Complete |
 | 7 | Billing & Stripe Integration | P1 | Complete |
 | 8 | Appointment Scheduling | P1 | Complete |
-| 9 | Review Aggregation | P2 | Planned |
-| 10 | Content Self-Service Editor | P2 | Planned |
+| 9 | Review Aggregation | P2 | Complete |
+| 10 | Content Self-Service Editor | P2 | Complete |
 
 ---
 
@@ -174,32 +174,52 @@ Built-in scheduling system that integrates with generated sites, allowing custom
 
 ## Phase 9: Review Aggregation
 
+**Status:** Complete
+
 ### Description
 Multi-platform review display widget that aggregates and displays business reviews on generated sites.
 
-### Key Features
+### Deliverables
 - Review display widget with multiple layouts
-- Support for Google, Yelp, and Facebook reviews
-- Review response management
-- Rating analytics and trends
-- Review request automation
-- Filtering and moderation controls
+- Support for Google, Yelp, and Facebook reviews (simulated)
+- Review response management for business owners
+- Rating analytics and trends with monthly stats
+- Review request email automation (simulated)
+- Filtering by platform, status, and rating
+- Review status management (published, hidden, flagged)
 
 ---
 
 ## Phase 10: Content Self-Service Editor
 
+**Status:** Complete
+
 ### Description
 WYSIWYG page editor that allows business owners to update their sites without coding knowledge.
 
-### Key Features
-- Drag-and-drop block editing
-- Text editing with rich formatting
-- Image upload and gallery management
-- SEO settings (meta tags, OG tags, schema)
-- Publish/draft workflow
-- Version history with rollback
-- Mobile-responsive editing interface
+### Deliverables
+- Block-based content editor with drag-and-drop reordering
+- 10 block types: hero, text, image, gallery, services, testimonials, contact, CTA, divider, spacer
+- SEO settings panel (title, description, keywords, Open Graph)
+- Theme customization with live preview
+- Publish/draft workflow with version control
+- Version history with one-click rollback
+- Image upload and management (simulated storage)
+- Responsive editor interface
+
+### API Endpoints
+- `GET /api/content/draft/:siteId` - Get current draft
+- `PUT /api/content/draft/:siteId` - Update draft (blocks, SEO, theme)
+- `POST /api/content/draft/:siteId/blocks` - Add new block
+- `PATCH /api/content/draft/:siteId/blocks/:blockId` - Update block
+- `DELETE /api/content/draft/:siteId/blocks/:blockId` - Delete block
+- `POST /api/content/draft/:siteId/reorder` - Reorder blocks
+- `POST /api/content/draft/:siteId/publish` - Publish draft as new version
+- `GET /api/content/versions/:siteId` - Get version history
+- `POST /api/content/versions/:siteId/:versionId/rollback` - Rollback to version
+- `POST /api/content/images/:siteId` - Upload image metadata
+- `GET /api/content/images/:siteId` - List images
+- `DELETE /api/content/images/:siteId/:imageId` - Delete image
 
 ---
 

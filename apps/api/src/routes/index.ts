@@ -7,6 +7,7 @@ import dashboardRouter from "./dashboard";
 import billingRouter from "./billing";
 import schedulingRouter from "./scheduling";
 import reviewsRouter from "./reviews";
+import contentRouter from "./content";
 
 const router = Router();
 
@@ -18,6 +19,7 @@ router.use("/dashboard", dashboardRouter);
 router.use("/billing", billingRouter);
 router.use("/scheduling", schedulingRouter);
 router.use("/reviews", reviewsRouter);
+router.use("/content", contentRouter);
 
 router.get("/", (_req, res) => {
   res.json({
@@ -86,6 +88,22 @@ router.get("/", (_req, res) => {
         respond: "POST /api/reviews/:reviewId/respond",
         updateStatus: "PATCH /api/reviews/:reviewId/status",
         requestReviews: "POST /api/reviews/request/:siteId",
+      },
+      content: {
+        getDraft: "GET /api/content/draft/:siteId",
+        updateDraft: "PUT /api/content/draft/:siteId",
+        addBlock: "POST /api/content/draft/:siteId/blocks",
+        updateBlock: "PATCH /api/content/draft/:siteId/blocks/:blockId",
+        deleteBlock: "DELETE /api/content/draft/:siteId/blocks/:blockId",
+        reorderBlocks: "POST /api/content/draft/:siteId/reorder",
+        publish: "POST /api/content/draft/:siteId/publish",
+        versions: "GET /api/content/versions/:siteId",
+        publishedVersion: "GET /api/content/versions/:siteId/published",
+        getVersion: "GET /api/content/versions/:siteId/:versionId",
+        rollback: "POST /api/content/versions/:siteId/:versionId/rollback",
+        uploadImage: "POST /api/content/images/:siteId",
+        listImages: "GET /api/content/images/:siteId",
+        deleteImage: "DELETE /api/content/images/:siteId/:imageId",
       },
     },
   });
