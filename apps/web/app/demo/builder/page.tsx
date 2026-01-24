@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { PhaseTracker } from "@/components/intake/PhaseTracker";
 import { ChatMessage } from "@/components/intake/ChatMessage";
 import { ChatInput } from "@/components/intake/ChatInput";
@@ -321,6 +322,25 @@ export default function BuilderPage() {
               <div ref={messagesEndRef} />
             </div>
           </div>
+          {session.currentPhase === "close" && userMessageCount.current >= 14 && (
+            <div className="bg-forest-green/5 border-t border-forest-green/20 px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-forest-green">Ready to go live?</p>
+                  <p className="text-xs text-gray-500">Deploy your site in one click</p>
+                </div>
+                <Link
+                  href="/demo/deploy"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-forest-green text-white font-semibold text-sm shadow hover:bg-forest-green-800 transition-colors"
+                >
+                  Deploy Site
+                  <svg className="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          )}
           <ChatInput
             onSend={sendMessage}
             disabled={isTyping || session.status === "completed"}

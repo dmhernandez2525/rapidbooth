@@ -101,7 +101,7 @@ The project deploys to Render via the `render.yaml` blueprint:
 | 2. Intake Engine | Complete | Conversational AI business discovery |
 | 3. Site Generator | Complete | Component library + template assembly |
 | 4. Live Preview | Complete | Real-time site preview during builds |
-| 5. Deployment Service | Planned | Auto-deploy generated sites |
+| 5. Deployment Service | Complete | Auto-deploy generated sites |
 | 6. Rep Dashboard | Planned | Sales session & pipeline tracking |
 | 7. Billing | Planned | Stripe subscription management |
 | 8. Scheduling | Planned | Appointment booking system |
