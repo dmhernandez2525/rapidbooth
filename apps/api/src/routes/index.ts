@@ -2,12 +2,14 @@ import { Router } from "express";
 import healthRouter from "./health";
 import intakeRouter from "./intake";
 import sitesRouter from "./sites";
+import deploymentsRouter from "./deployments";
 
 const router = Router();
 
 router.use(healthRouter);
 router.use("/intake", intakeRouter);
 router.use("/sites", sitesRouter);
+router.use("/deployments", deploymentsRouter);
 
 router.get("/", (_req, res) => {
   res.json({
@@ -26,6 +28,16 @@ router.get("/", (_req, res) => {
         generateDirect: "POST /api/sites/generate-direct",
         get: "GET /api/sites/:siteId",
         list: "GET /api/sites",
+      },
+      deployments: {
+        deploy: "POST /api/deployments",
+        get: "GET /api/deployments/id/:deploymentId",
+        getBySite: "GET /api/deployments/site/:siteId",
+        list: "GET /api/deployments",
+        stop: "POST /api/deployments/:id/stop",
+        redeploy: "POST /api/deployments/:id/redeploy",
+        domain: "PATCH /api/deployments/:id/domain",
+        stats: "GET /api/deployments/stats",
       },
     },
   });

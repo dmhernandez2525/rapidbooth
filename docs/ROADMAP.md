@@ -8,7 +8,7 @@
 | 2 | Conversational Intake Engine | P0 | Complete |
 | 3 | AI Site Generator | P0 | Complete |
 | 4 | Live Preview System | P0 | Complete |
-| 5 | Deployment Service | P0 | Planned |
+| 5 | Deployment Service | P0 | Complete |
 | 6 | Rep Dashboard & Analytics | P1 | Planned |
 | 7 | Billing & Stripe Integration | P1 | Planned |
 | 8 | Appointment Scheduling | P1 | Planned |
@@ -97,16 +97,20 @@ Real-time site preview that updates as the intake progresses. Users see their si
 
 ## Phase 5: Deployment Service
 
+**Status:** Complete
+
 ### Description
 Automated deployment of generated sites to subdomains with SSL provisioning and DNS configuration.
 
-### Key Features
-- One-click deployment to subdomain
-- SSL certificate provisioning
-- Deployment status tracking and history
-- Site management (start/stop/update)
-- Custom domain support
-- DNS configuration guidance
+### Deliverables
+- Deployment service with async pipeline simulation (queued → building → SSL → DNS → deploying → live)
+- REST API: create, get, list, stop, redeploy, update custom domain, stats
+- Build log tracking with timestamped entries
+- Subdomain auto-generation from business name
+- Custom domain support with CNAME guidance
+- Frontend deployment page with pipeline visualization and live build log
+- Deploy button integrated into builder flow after intake completion
+- Site management: stop/redeploy controls
 
 ---
 
