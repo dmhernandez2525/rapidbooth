@@ -48,6 +48,6 @@ services:
 
 databases:
   - name: rapidbooth-db
-    plan: basic
+    plan: basic-256mb
     databaseName: rapidbooth
     user: rapidbooth_user
