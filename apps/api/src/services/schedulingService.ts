@@ -1,5 +1,10 @@
+import crypto from "crypto";
+
 export type BookingStatus = "pending" | "confirmed" | "canceled" | "completed";
 export type DayOfWeek = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
+
+const MIN_SLOT_DURATION = 5; // minutes
+const MAX_BOOKINGS = 5000;
 
 export interface TimeSlot {
   start: string; // HH:MM
@@ -56,11 +61,11 @@ const availabilityConfigs = new Map<string, AvailabilityConfig>();
 const bookings = new Map<string, Booking>();
 
 function generateId(prefix: string): string {
-  return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `${prefix}_${crypto.randomUUID()}`;
 }
 
 function generateConfirmationCode(): string {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
+  return crypto.randomBytes(4).toString("hex").toUpperCase();
 }
 
 // Seed demo data
@@ -139,6 +144,14 @@ export function getAvailability(siteId: string): AvailabilityConfig | undefined 
 export function updateAvailability(siteId: string, updates: Partial<AvailabilityConfig>): AvailabilityConfig {
   const existing = availabilityConfigs.get(siteId);
   if (!existing) throw new Error("Availability config not found");
+
+  if (updates.slotDuration !== undefined && updates.slotDuration < MIN_SLOT_DURATION) {
+    throw new Error(`slotDuration must be at least ${MIN_SLOT_DURATION} minutes`);
+  }
+  if (updates.bufferTime !== undefined && updates.bufferTime < 0) {
+    throw new Error("bufferTime must be non-negative");
+  }
+
   const updated = { ...existing, ...updates, siteId };
   availabilityConfigs.set(siteId, updated);
   return updated;
@@ -147,6 +160,10 @@ export function updateAvailability(siteId: string, updates: Partial<Availability
 export function getAvailableSlots(siteId: string, date: string): AvailableSlot[] {
   const config = availabilityConfigs.get(siteId);
   if (!config) return [];
+
+  // Guard against infinite loop: enforce minimum slot duration
+  const slotDuration = Math.max(config.slotDuration, MIN_SLOT_DURATION);
+  const bufferTime = Math.max(config.bufferTime, 0);
 
   const dayOfWeek = getDayOfWeek(date);
   const daySchedule = config.schedule[dayOfWeek];
@@ -163,18 +180,18 @@ export function getAvailableSlots(siteId: string, date: string): AvailableSlot[]
     let current = timeToMinutes(window.start);
     const windowEnd = timeToMinutes(window.end);
 
-    while (current + config.slotDuration <= windowEnd) {
+    while (current + slotDuration <= windowEnd) {
       const startTime = minutesToTime(current);
-      const endTime = minutesToTime(current + config.slotDuration);
+      const endTime = minutesToTime(current + slotDuration);
 
       const isBooked = existingBookings.some((b) => {
         const bStart = timeToMinutes(b.startTime);
-        const bEnd = timeToMinutes(b.endTime) + config.bufferTime;
-        return current < bEnd && current + config.slotDuration > bStart;
+        const bEnd = timeToMinutes(b.endTime) + bufferTime;
+        return current < bEnd && current + slotDuration > bStart;
       });
 
       slots.push({ date, startTime, endTime, available: !isBooked });
-      current += config.slotDuration + config.bufferTime;
+      current += slotDuration + bufferTime;
     }
   }
 
@@ -182,6 +199,16 @@ export function getAvailableSlots(siteId: string, date: string): AvailableSlot[]
 }
 
 export function createBooking(request: CreateBookingRequest): Booking {
+  if (bookings.size >= MAX_BOOKINGS) {
+    throw new Error("Maximum bookings reached");
+  }
+
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(request.customerEmail)) {
+    throw new Error("Invalid email address");
+  }
+
   const config = availabilityConfigs.get(request.siteId);
   if (!config) throw new Error("No availability configured for this site");
 
