@@ -3,6 +3,7 @@ import healthRouter from "./health";
 import intakeRouter from "./intake";
 import sitesRouter from "./sites";
 import deploymentsRouter from "./deployments";
+import dashboardRouter from "./dashboard";
 
 const router = Router();
 
@@ -10,6 +11,7 @@ router.use(healthRouter);
 router.use("/intake", intakeRouter);
 router.use("/sites", sitesRouter);
 router.use("/deployments", deploymentsRouter);
+router.use("/dashboard", dashboardRouter);
 
 router.get("/", (_req, res) => {
   res.json({
