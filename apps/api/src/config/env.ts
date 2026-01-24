@@ -3,15 +3,24 @@ export const env = {
   PORT: parseInt(process.env.PORT || "4000", 10),
   CORS_ORIGIN: process.env.CORS_ORIGIN || "http://localhost:3000",
   DATABASE_URL: process.env.DATABASE_URL || "",
+  ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || "",
   API_VERSION: "v1",
 } as const;
 
 export function validateEnv(): void {
-  const required: string[] = [];
-  const missing = required.filter((key) => !process.env[key]);
+  const warnings: string[] = [];
 
-  if (missing.length > 0) {
-    const missingList = missing.join(", ");
-    console.warn("Warning: Missing environment variables: " + missingList);
+  if (!env.ANTHROPIC_API_KEY) {
+    warnings.push("ANTHROPIC_API_KEY not set - intake engine will use simulated responses");
+  }
+
+  if (!env.DATABASE_URL) {
+    warnings.push("DATABASE_URL not set - using in-memory storage");
+  }
+
+  if (warnings.length > 0) {
+    for (const warning of warnings) {
+      console.warn("[env] " + warning);
+    }
   }
 }
