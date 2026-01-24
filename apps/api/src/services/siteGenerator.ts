@@ -1,5 +1,10 @@
+import crypto from "crypto";
 import type { ExtractedBusinessData, ColorScheme, SiteContent, GeneratedSiteConfig } from "@rapidbooth/shared";
 import { env } from "../config/env";
+
+const MAX_SITES = 500;
+const SITE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const API_TIMEOUT_MS = 60_000; // 60 seconds for generation
 
 export type TemplateType = "home-services" | "restaurant" | "professional" | "retail";
 
@@ -63,8 +68,17 @@ export interface GeneratedContent {
 
 const sites = new Map<string, GeneratedSite>();
 
+function evictExpiredSites(): void {
+  const now = Date.now();
+  for (const [id, site] of sites) {
+    if (now - new Date(site.createdAt).getTime() > SITE_TTL_MS) {
+      sites.delete(id);
+    }
+  }
+}
+
 function generateId(): string {
-  return `site_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `site_${crypto.randomUUID()}`;
 }
 
 function detectTemplate(data: ExtractedBusinessData): TemplateType {
@@ -192,10 +206,18 @@ function getDefaultTheme(template: TemplateType, data: ExtractedBusinessData): S
   };
 }
 
+function sanitizeForPrompt(value: string | undefined, fallback: string, maxLength = 200): string {
+  const v = (value || fallback).slice(0, maxLength);
+  return v.replace(/[<>{}]/g, "");
+}
+
 async function generateContent(data: ExtractedBusinessData, template: TemplateType): Promise<GeneratedContent> {
   const apiKey = env.ANTHROPIC_API_KEY;
 
   if (apiKey) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+
     try {
       const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
@@ -211,12 +233,12 @@ async function generateContent(data: ExtractedBusinessData, template: TemplateTy
           messages: [{
             role: "user",
             content: `Generate website content for this business:
-Name: ${data.businessName || "My Business"}
-Type: ${data.businessType || template}
-Description: ${data.description || "A local business serving the community"}
-Location: ${data.location || "Local area"}
-Unique Value: ${data.uniqueValue || "Quality service"}
-Target Customers: ${data.targetCustomers || "Local customers"}
+Name: ${sanitizeForPrompt(data.businessName, "My Business")}
+Type: ${sanitizeForPrompt(data.businessType || data.industry, template)}
+Description: ${sanitizeForPrompt(data.description, "A local business serving the community")}
+Location: ${sanitizeForPrompt(data.location, "Local area")}
+Unique Value: ${sanitizeForPrompt(data.uniqueValue, "Quality service")}
+Target Customers: ${sanitizeForPrompt(data.targetCustomers, "Local customers")}
 
 Return JSON with this exact structure:
 {
@@ -237,15 +259,20 @@ Return JSON with this exact structure:
 Generate 3-5 services relevant to this business type, and 3 realistic testimonials.`,
           }],
         }),
+        signal: controller.signal,
       });
 
       if (response.ok) {
-        const result = await response.json() as { content: Array<{ text: string }> };
-        const text = result.content[0].text;
-        return JSON.parse(text);
+        const result = (await response.json()) as { content?: Array<{ text?: string }> };
+        const text = result?.content?.[0]?.text;
+        if (text) {
+          return JSON.parse(text) as GeneratedContent;
+        }
       }
-    } catch (error) {
+    } catch {
       // Fall through to default content
+    } finally {
+      clearTimeout(timeout);
     }
   }
 
@@ -337,6 +364,12 @@ function getDefaultContent(data: ExtractedBusinessData, template: TemplateType):
 }
 
 export async function generateSite(sessionId: string, intakeData: ExtractedBusinessData): Promise<GeneratedSite> {
+  evictExpiredSites();
+
+  if (sites.size >= MAX_SITES) {
+    throw new Error("Maximum stored sites reached. Please try again later.");
+  }
+
   const template = detectTemplate(intakeData);
   const components = getTemplateComponents(template, intakeData);
   const theme = getDefaultTheme(template, intakeData);
