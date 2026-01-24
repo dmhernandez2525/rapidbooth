@@ -9,7 +9,7 @@
 | 3 | AI Site Generator | P0 | Complete |
 | 4 | Live Preview System | P0 | Complete |
 | 5 | Deployment Service | P0 | Complete |
-| 6 | Rep Dashboard & Analytics | P1 | Planned |
+| 6 | Rep Dashboard & Analytics | P1 | Complete |
 | 7 | Billing & Stripe Integration | P1 | Planned |
 | 8 | Appointment Scheduling | P1 | Planned |
 | 9 | Review Aggregation | P2 | Planned |
@@ -116,16 +116,20 @@ Automated deployment of generated sites to subdomains with SSL provisioning and 
 
 ## Phase 6: Rep Dashboard & Analytics
 
+**Status:** Complete
+
 ### Description
 Dashboard for sales reps to track sessions, manage client pipeline, and view performance metrics.
 
-### Key Features
-- Sales session list with status tracking
-- Client pipeline (lead → prospect → customer)
-- Revenue analytics with charts
-- Rep performance metrics
-- Session history with conversation logs
-- Filter and search functionality
+### Deliverables
+- Dashboard service with demo data seeding for 8 clients and sessions
+- Metrics API: total/completed sessions, conversion rate, MRR, avg duration
+- Client pipeline visualization (lead → prospect → active → churned)
+- Revenue bar chart with monthly totals and MRR display
+- Sessions table with status badges, phase tracking, and duration
+- Filter by status and search by business name
+- Client status management (pipeline stage updates)
+- REST endpoints: metrics, pipeline, revenue, sessions, clients
 
 ---
 
