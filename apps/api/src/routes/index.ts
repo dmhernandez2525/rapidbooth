@@ -6,6 +6,7 @@ import deploymentsRouter from "./deployments";
 import dashboardRouter from "./dashboard";
 import billingRouter from "./billing";
 import schedulingRouter from "./scheduling";
+import reviewsRouter from "./reviews";
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.use("/deployments", deploymentsRouter);
 router.use("/dashboard", dashboardRouter);
 router.use("/billing", billingRouter);
 router.use("/scheduling", schedulingRouter);
+router.use("/reviews", reviewsRouter);
 
 router.get("/", (_req, res) => {
   res.json({
