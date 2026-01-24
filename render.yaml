@@ -2,9 +2,8 @@ services:
   - type: web
     name: rapidbooth-web
     runtime: static
-    rootDir: apps/web
-    buildCommand: npm ci && npm run build
-    staticPublishPath: ./out
+    buildCommand: npm ci && npm run build --workspace=@rapidbooth/shared && npm run build --workspace=@rapidbooth/web
+    staticPublishPath: apps/web/out
     pullRequestPreviewsEnabled: true
     headers:
       - path: /*
@@ -19,6 +18,9 @@ services:
       - path: /*
         name: Permissions-Policy
         value: camera=(), microphone=(), geolocation=()
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
     routes:
       - type: rewrite
         source: /*
@@ -27,10 +29,9 @@ services:
   - type: web
     name: rapidbooth-api
     runtime: node
-    rootDir: apps/api
     plan: free
-    buildCommand: NODE_ENV=development npm ci && npm run build
-    startCommand: NODE_ENV=production node dist/index.js
+    buildCommand: npm ci && npm run build --workspace=@rapidbooth/shared && npm run build --workspace=@rapidbooth/api
+    startCommand: node apps/api/dist/index.js
     autoDeploy: true
     pullRequestPreviewsEnabled: true
     healthCheckPath: /api/health
