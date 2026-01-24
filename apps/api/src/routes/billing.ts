@@ -18,8 +18,16 @@ router.post("/subscriptions", (req: Request, res: Response) => {
   try {
     const { clientId, businessName, paymentMethodId, trialDays } = req.body;
 
-    if (!clientId || !businessName) {
-      res.status(400).json({ error: "clientId and businessName are required" });
+    if (!clientId || typeof clientId !== "string") {
+      res.status(400).json({ error: "clientId is required and must be a string" });
+      return;
+    }
+    if (!businessName || typeof businessName !== "string" || businessName.length > 200) {
+      res.status(400).json({ error: "businessName is required and must be a string under 200 chars" });
+      return;
+    }
+    if (trialDays !== undefined && (typeof trialDays !== "number" || trialDays < 0 || trialDays > 90)) {
+      res.status(400).json({ error: "trialDays must be a number between 0 and 90" });
       return;
     }
 
@@ -27,7 +35,19 @@ router.post("/subscriptions", (req: Request, res: Response) => {
     res.status(201).json({ subscription });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to create subscription";
-    res.status(400).json({ error: message });
+    const status = message.includes("already has") ? 409 : 400;
+    res.status(status).json({ error: message });
+  }
+});
+
+// List all subscriptions - must be before /:id
+router.get("/subscriptions", (_req: Request, res: Response) => {
+  try {
+    const subscriptionsList = getAllSubscriptions();
+    res.json({ subscriptions: subscriptionsList, total: subscriptionsList.length });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to list subscriptions";
+    res.status(500).json({ error: message });
   }
 });
 
@@ -42,17 +62,6 @@ router.get("/subscriptions/:id", (req: Request, res: Response) => {
     res.json({ subscription });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to get subscription";
-    res.status(500).json({ error: message });
-  }
-});
-
-// List all subscriptions
-router.get("/subscriptions", (_req: Request, res: Response) => {
-  try {
-    const subscriptionsList = getAllSubscriptions();
-    res.json({ subscriptions: subscriptionsList, total: subscriptionsList.length });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to list subscriptions";
     res.status(500).json({ error: message });
   }
 });
@@ -114,11 +123,23 @@ router.get("/metrics", (_req: Request, res: Response) => {
   }
 });
 
-// Webhook endpoint (simulated)
+// Webhook endpoint (simulated - in production, verify Stripe signature)
 router.post("/webhooks", (req: Request, res: Response) => {
   try {
+    // In production: verify stripe-signature header against webhook secret
+    const signature = req.headers["stripe-signature"];
+    if (!signature && process.env.NODE_ENV === "production") {
+      res.status(401).json({ error: "Missing webhook signature" });
+      return;
+    }
+
     const { type, data } = req.body;
-    const result = handleWebhookEvent({ type, data });
+    if (!type || typeof type !== "string") {
+      res.status(400).json({ error: "type is required" });
+      return;
+    }
+
+    const result = handleWebhookEvent({ type, data: data || {} });
     res.json(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Webhook processing failed";

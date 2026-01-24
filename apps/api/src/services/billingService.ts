@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 export type SubscriptionStatus = "active" | "past_due" | "canceled" | "trialing";
 export type PaymentStatus = "succeeded" | "pending" | "failed";
 
@@ -64,12 +66,17 @@ const invoices: Invoice[] = [];
 const paymentMethods = new Map<string, PaymentMethod[]>();
 
 function generateId(prefix: string): string {
-  return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `${prefix}_${crypto.randomUUID()}`;
 }
 
 function addMonths(date: Date, months: number): Date {
   const result = new Date(date);
-  result.setMonth(result.getMonth() + months);
+  const targetMonth = result.getMonth() + months;
+  result.setMonth(targetMonth);
+  // Clamp day to avoid overflow (e.g., Jan 31 + 1 month = Feb 28, not Mar 3)
+  if (result.getMonth() !== ((targetMonth % 12) + 12) % 12) {
+    result.setDate(0); // Set to last day of previous month
+  }
   return result;
 }
 
@@ -173,6 +180,14 @@ function seedBillingData(): void {
 seedBillingData();
 
 export function createSubscription(request: CreateSubscriptionRequest): Subscription {
+  // Check for existing active subscription for this client
+  const existing = Array.from(subscriptions.values()).find(
+    (s) => s.clientId === request.clientId && (s.status === "active" || s.status === "trialing")
+  );
+  if (existing) {
+    throw new Error("Client already has an active subscription");
+  }
+
   const now = new Date();
   const trialEnd = request.trialDays
     ? new Date(now.getTime() + request.trialDays * 86400000)
