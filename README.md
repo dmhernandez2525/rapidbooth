@@ -98,7 +98,7 @@ The project deploys to Render via the `render.yaml` blueprint:
 | Phase | Status | Description |
 |-------|--------|-------------|
 | 1. Foundation | Complete | Monorepo, marketing site, API skeleton |
-| 2. Intake Engine | In Progress | Conversational AI business discovery |
+| 2. Intake Engine | Complete | Conversational AI business discovery |
 | 3. Site Generator | Planned | Component library + template assembly |
 | 4. Live Preview | Planned | Real-time site preview during builds |
 | 5. Deployment Service | Planned | Auto-deploy generated sites |
