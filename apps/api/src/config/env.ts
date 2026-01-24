@@ -20,7 +20,7 @@ export function validateEnv(): void {
 
   if (warnings.length > 0) {
     for (const warning of warnings) {
-      console.warn("[env] " + warning);
+      process.stderr.write(`[env:warning] ${warning}\n`);
     }
   }
 }

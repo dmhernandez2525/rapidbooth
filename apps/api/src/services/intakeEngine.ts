@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import type {
   IntakeSession,
   IntakeMessage,
@@ -7,6 +8,10 @@ import type {
 } from "@rapidbooth/shared";
 import { PHASE_ORDER } from "@rapidbooth/shared";
 import { env } from "../config/env";
+
+const MAX_SESSIONS = 1000;
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const API_TIMEOUT_MS = 30_000; // 30 seconds
 
 const PHASE_PROMPTS: Record<IntakePhase, string> = {
   discovery: `You are a friendly, professional business consultant conducting an intake session for website creation. You are in the DISCOVERY phase.
@@ -77,12 +82,22 @@ Provide a clear summary of everything discussed. Make them feel confident about 
 
 const sessions = new Map<string, IntakeSession>();
 
+function evictExpiredSessions(): void {
+  const now = Date.now();
+  for (const [id, session] of sessions) {
+    const age = now - new Date(session.createdAt).getTime();
+    if (age > SESSION_TTL_MS) {
+      sessions.delete(id);
+    }
+  }
+}
+
 function generateId(): string {
-  return `ses_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `ses_${crypto.randomUUID()}`;
 }
 
 function generateMessageId(): string {
-  return `msg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `msg_${crypto.randomUUID()}`;
 }
 
 function createInitialPhaseProgress(): Record<IntakePhase, PhaseProgress> {
@@ -97,6 +112,12 @@ function createInitialPhaseProgress(): Record<IntakePhase, PhaseProgress> {
 }
 
 export function createSession(repId?: string): IntakeSession {
+  evictExpiredSessions();
+
+  if (sessions.size >= MAX_SESSIONS) {
+    throw new Error("Maximum concurrent sessions reached. Please try again later.");
+  }
+
   const session: IntakeSession = {
     id: generateId(),
     status: "active",
@@ -135,10 +156,29 @@ function getNextPhase(current: IntakePhase): IntakePhase | null {
   return PHASE_ORDER[idx + 1];
 }
 
+function sanitizeUserInput(input: string): string {
+  // Remove phase transition markers that could be injected by users
+  return input.replace(/\[PHASE_COMPLETE\]/gi, "").trim();
+}
+
 function extractDataFromResponse(content: string, session: IntakeSession): ExtractedBusinessData {
-  // Basic extraction from conversation context - in production this would use
-  // a separate Claude call with structured output
   const data = { ...session.extractedData };
+  const allUserMessages = session.messages
+    .filter((m) => m.role === "user")
+    .map((m) => m.content.toLowerCase())
+    .join(" ");
+
+  // Basic keyword extraction from conversation
+  if (!data.businessName && allUserMessages.length > 20) {
+    const nameMatch = allUserMessages.match(/(?:called|named|name is|we're|i'm)\s+([^,.!?]+)/i);
+    if (nameMatch) data.businessName = nameMatch[1].trim();
+  }
+
+  if (!data.location) {
+    const locationMatch = allUserMessages.match(/(?:located|based|in)\s+([\w\s,]+(?:street|ave|road|city|town|village|district)[\w\s,]*)/i);
+    if (locationMatch) data.location = locationMatch[1].trim();
+  }
+
   return data;
 }
 
@@ -149,32 +189,45 @@ async function callClaudeAPI(
   const apiKey = env.ANTHROPIC_API_KEY;
 
   if (!apiKey) {
-    // Fallback to simulated responses when no API key is configured
     return getSimulatedResponse(messages);
   }
 
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages,
-    }),
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
 
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Claude API error: ${response.status} - ${error}`);
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages,
+      }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Claude API error: ${response.status} - ${error}`);
+    }
+
+    const data = (await response.json()) as { content?: Array<{ text?: string }> };
+
+    const text = data?.content?.[0]?.text;
+    if (!text) {
+      throw new Error("Unexpected API response structure");
+    }
+
+    return text;
+  } finally {
+    clearTimeout(timeout);
   }
-
-  const data = await response.json();
-  return data.content[0].text;
 }
 
 function getSimulatedResponse(
@@ -223,12 +276,15 @@ export async function processMessage(
     throw new Error(`Session is ${session.status}, cannot process messages`);
   }
 
+  // Sanitize user input to prevent prompt injection
+  const sanitizedContent = sanitizeUserInput(userContent);
+
   // Add user message
   const userMessage: IntakeMessage = {
     id: generateMessageId(),
     sessionId,
     role: "user",
-    content: userContent,
+    content: sanitizedContent,
     phase: session.currentPhase,
     timestamp: new Date().toISOString(),
   };

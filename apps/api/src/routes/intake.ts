@@ -6,13 +6,20 @@ import {
   processMessage,
   getInitialGreeting,
 } from "../services/intakeEngine";
+import { strictLimiter } from "../middleware/rateLimiter";
 
 const router = Router();
 
 // Start a new intake session
 router.post("/start", (req: Request, res: Response) => {
   try {
-    const { repId, businessName } = req.body;
+    const { repId } = req.body;
+
+    if (repId !== undefined && (typeof repId !== "string" || repId.length > 100)) {
+      res.status(400).json({ error: "repId must be a string under 100 characters" });
+      return;
+    }
+
     const session = createSession(repId);
     const greeting = getInitialGreeting(session);
 
@@ -22,12 +29,13 @@ router.post("/start", (req: Request, res: Response) => {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to start session";
-    res.status(500).json({ error: message });
+    const status = message.includes("Maximum") ? 429 : 500;
+    res.status(status).json({ error: message });
   }
 });
 
 // Send a message in an active session
-router.post("/message", async (req: Request, res: Response) => {
+router.post("/message", strictLimiter, async (req: Request, res: Response) => {
   try {
     const { sessionId, content } = req.body;
 
@@ -66,6 +74,17 @@ router.post("/message", async (req: Request, res: Response) => {
   }
 });
 
+// List all sessions (for dashboard) - must be before /:sessionId
+router.get("/", (_req: Request, res: Response) => {
+  try {
+    const sessions = getAllSessions();
+    res.json({ sessions, total: sessions.length });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to list sessions";
+    res.status(500).json({ error: message });
+  }
+});
+
 // Get session state
 router.get("/:sessionId", (req: Request, res: Response) => {
   try {
@@ -77,17 +96,6 @@ router.get("/:sessionId", (req: Request, res: Response) => {
     res.json({ session });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to get session";
-    res.status(500).json({ error: message });
-  }
-});
-
-// List all sessions (for dashboard)
-router.get("/", (_req: Request, res: Response) => {
-  try {
-    const sessions = getAllSessions();
-    res.json({ sessions, total: sessions.length });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to list sessions";
     res.status(500).json({ error: message });
   }
 });
