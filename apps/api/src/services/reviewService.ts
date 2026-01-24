@@ -232,13 +232,13 @@ export function getReviewStats(siteId: string): ReviewStats {
 }
 
 export function requestReviews(siteId: string, customerEmails: string[]): { sent: number; skipped: number } {
-  // Simulates sending review request emails
   const config = reviewConfigs.get(siteId);
   if (!config) throw new Error("Site not configured for reviews");
 
-  // In production, this would send actual emails with review links
-  const sent = customerEmails.filter((e) => e.includes("@")).length;
-  const skipped = customerEmails.length - sent;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const validEmails = customerEmails.filter((e) => typeof e === "string" && emailRegex.test(e));
+  const skipped = customerEmails.length - validEmails.length;
 
-  return { sent, skipped };
+  // In production, this would send actual emails with review links
+  return { sent: validEmails.length, skipped };
 }

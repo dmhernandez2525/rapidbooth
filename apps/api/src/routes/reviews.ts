@@ -56,6 +56,17 @@ router.get("/", (req: Request, res: Response) => {
   }
 });
 
+// Get review stats for a site - MUST be before /:reviewId
+router.get("/stats/:siteId", (req: Request, res: Response) => {
+  try {
+    const stats = getReviewStats(req.params.siteId);
+    res.json({ stats });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to get stats";
+    res.status(500).json({ error: message });
+  }
+});
+
 // Get a specific review
 router.get("/:reviewId", (req: Request, res: Response) => {
   try {
@@ -75,8 +86,8 @@ router.get("/:reviewId", (req: Request, res: Response) => {
 router.post("/:reviewId/respond", (req: Request, res: Response) => {
   try {
     const { response: responseText } = req.body;
-    if (!responseText) {
-      res.status(400).json({ error: "response text is required" });
+    if (!responseText || typeof responseText !== "string" || responseText.length > 2000) {
+      res.status(400).json({ error: "response text is required and must be under 2000 chars" });
       return;
     }
     const review = respondToReview(req.params.reviewId, responseText);
@@ -103,23 +114,16 @@ router.patch("/:reviewId/status", (req: Request, res: Response) => {
   }
 });
 
-// Get review stats for a site
-router.get("/stats/:siteId", (req: Request, res: Response) => {
-  try {
-    const stats = getReviewStats(req.params.siteId);
-    res.json({ stats });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to get stats";
-    res.status(500).json({ error: message });
-  }
-});
-
 // Send review request emails
 router.post("/request/:siteId", (req: Request, res: Response) => {
   try {
     const { emails } = req.body;
     if (!emails || !Array.isArray(emails) || emails.length === 0) {
       res.status(400).json({ error: "emails array is required" });
+      return;
+    }
+    if (emails.length > 50) {
+      res.status(400).json({ error: "Maximum 50 emails per request" });
       return;
     }
     const result = requestReviews(req.params.siteId, emails);
