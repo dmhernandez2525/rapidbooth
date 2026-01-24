@@ -11,7 +11,7 @@
 | 5 | Deployment Service | P0 | Complete |
 | 6 | Rep Dashboard & Analytics | P1 | Complete |
 | 7 | Billing & Stripe Integration | P1 | Complete |
-| 8 | Appointment Scheduling | P1 | Planned |
+| 8 | Appointment Scheduling | P1 | Complete |
 | 9 | Review Aggregation | P2 | Planned |
 | 10 | Content Self-Service Editor | P2 | Planned |
 
@@ -154,17 +154,21 @@ Stripe-pattern subscription management for the $30/month plan.
 
 ## Phase 8: Appointment Scheduling
 
+**Status:** Complete
+
 ### Description
 Built-in scheduling system that integrates with generated sites, allowing customers to book appointments directly.
 
-### Key Features
-- Calendar widget for generated sites
-- Booking management dashboard
-- Email notifications (confirmation, reminder, cancellation)
-- Availability settings (business hours, blocked times)
-- Timezone support
-- Buffer time between appointments
-- Booking confirmation flow
+### Deliverables
+- Scheduling service with availability configuration per site (business hours, slot duration, buffer time)
+- Booking lifecycle management (create, confirm, cancel)
+- Available slot calculation with conflict detection
+- Weekly calendar UI with date selection and slot visualization
+- Booking management with status badges and customer details
+- Upcoming appointments sidebar with quick stats
+- Per-site filtering for multi-business support
+- Blocked dates and timezone configuration
+- Confirmation code generation for customer lookups
 
 ---
 
