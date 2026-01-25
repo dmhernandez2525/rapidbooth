@@ -177,3 +177,131 @@ export const PHASE_ORDER: IntakePhase[] = [
   "content",
   "close",
 ];
+
+// Content Editor Types
+
+export type ContentBlockType =
+  | "hero"
+  | "text"
+  | "image"
+  | "gallery"
+  | "services"
+  | "testimonials"
+  | "contact"
+  | "cta"
+  | "divider"
+  | "spacer";
+
+export interface ContentBlock {
+  id: string;
+  type: ContentBlockType;
+  content: Record<string, unknown>;
+  order: number;
+}
+
+export interface HeroBlockContent {
+  title: string;
+  subtitle: string;
+  buttonText?: string;
+  buttonLink?: string;
+  backgroundImage?: string;
+}
+
+export interface TextBlockContent {
+  heading?: string;
+  body: string;
+  alignment: "left" | "center" | "right";
+}
+
+export interface ImageBlockContent {
+  src: string;
+  alt: string;
+  caption?: string;
+  width?: "small" | "medium" | "large" | "full";
+}
+
+export interface GalleryBlockContent {
+  images: Array<{
+    src: string;
+    alt: string;
+    caption?: string;
+  }>;
+  columns: 2 | 3 | 4;
+}
+
+export interface ServicesBlockContent {
+  heading: string;
+  services: ServiceItem[];
+}
+
+export interface TestimonialsBlockContent {
+  heading: string;
+  testimonials: TestimonialItem[];
+}
+
+export interface ContactBlockContent {
+  heading: string;
+  showForm: boolean;
+  showMap: boolean;
+  showPhone: boolean;
+  showEmail: boolean;
+  showAddress: boolean;
+}
+
+export interface CtaBlockContent {
+  heading: string;
+  subheading?: string;
+  buttonText: string;
+  buttonLink: string;
+  backgroundColor?: string;
+}
+
+export interface SEOSettings {
+  title: string;
+  description: string;
+  keywords: string[];
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  noIndex?: boolean;
+}
+
+export interface SiteVersion {
+  id: string;
+  siteId: string;
+  version: number;
+  blocks: ContentBlock[];
+  seo: SEOSettings;
+  theme: {
+    colors: ColorScheme;
+    fontFamily?: string;
+  };
+  status: "draft" | "published";
+  createdAt: string;
+  publishedAt?: string;
+  createdBy?: string;
+}
+
+export interface SiteContentDraft {
+  siteId: string;
+  blocks: ContentBlock[];
+  seo: SEOSettings;
+  theme: {
+    colors: ColorScheme;
+    fontFamily?: string;
+  };
+  lastSaved: string;
+  hasUnsavedChanges: boolean;
+}
+
+export interface UploadedImage {
+  id: string;
+  siteId: string;
+  filename: string;
+  url: string;
+  size: number;
+  width: number;
+  height: number;
+  uploadedAt: string;
+}
