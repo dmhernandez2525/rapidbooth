@@ -883,14 +883,431 @@ function BlockEditor({
         </div>
       );
 
+    case "services":
+      return (
+        <ServicesBlockEditor
+          content={content}
+          onUpdate={onUpdate}
+        />
+      );
+
+    case "testimonials":
+      return (
+        <TestimonialsBlockEditor
+          content={content}
+          onUpdate={onUpdate}
+        />
+      );
+
+    case "image":
+      return (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+            <input
+              type="text"
+              value={(content.src as string) || ""}
+              onChange={(e) => onUpdate({ src: e.target.value })}
+              placeholder="https://example.com/image.jpg"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Alt Text</label>
+            <input
+              type="text"
+              value={(content.alt as string) || ""}
+              onChange={(e) => onUpdate({ alt: e.target.value })}
+              placeholder="Describe the image for accessibility"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Caption (optional)</label>
+            <input
+              type="text"
+              value={(content.caption as string) || ""}
+              onChange={(e) => onUpdate({ caption: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Width</label>
+            <select
+              value={(content.width as string) || "medium"}
+              onChange={(e) => onUpdate({ width: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="small">Small (25%)</option>
+              <option value="medium">Medium (50%)</option>
+              <option value="large">Large (75%)</option>
+              <option value="full">Full Width</option>
+            </select>
+          </div>
+        </div>
+      );
+
+    case "gallery":
+      return (
+        <GalleryBlockEditor
+          content={content}
+          onUpdate={onUpdate}
+        />
+      );
+
+    case "divider":
+      return (
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            A horizontal line to separate sections of content.
+          </p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Style</label>
+            <select
+              value={(content.style as string) || "solid"}
+              onChange={(e) => onUpdate({ style: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="solid">Solid Line</option>
+              <option value="dashed">Dashed Line</option>
+              <option value="dotted">Dotted Line</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Width</label>
+            <select
+              value={(content.width as string) || "full"}
+              onChange={(e) => onUpdate({ width: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="small">Short (25%)</option>
+              <option value="medium">Medium (50%)</option>
+              <option value="large">Wide (75%)</option>
+              <option value="full">Full Width</option>
+            </select>
+          </div>
+        </div>
+      );
+
+    case "spacer":
+      return (
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            Add vertical space between sections.
+          </p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Height: {(content.height as number) || 48}px
+            </label>
+            <input
+              type="range"
+              min="16"
+              max="200"
+              step="8"
+              value={(content.height as number) || 48}
+              onChange={(e) => onUpdate({ height: parseInt(e.target.value, 10) })}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <span>16px</span>
+              <span>200px</span>
+            </div>
+          </div>
+        </div>
+      );
+
     default:
       return (
         <div className="text-sm text-gray-500">
           <p>Block type: {block.type}</p>
-          <p className="mt-2">Editor for this block type coming soon.</p>
         </div>
       );
   }
+}
+
+// Services Block Editor
+function ServicesBlockEditor({
+  content,
+  onUpdate,
+}: {
+  content: Record<string, unknown>;
+  onUpdate: (content: Record<string, unknown>) => void;
+}) {
+  const services = (content.services as Array<{ name: string; description: string }>) || [];
+
+  const addService = () => {
+    onUpdate({
+      services: [...services, { name: "", description: "" }],
+    });
+  };
+
+  const updateService = (index: number, field: "name" | "description", value: string) => {
+    const updated = services.map((s, i) =>
+      i === index ? { ...s, [field]: value } : s
+    );
+    onUpdate({ services: updated });
+  };
+
+  const removeService = (index: number) => {
+    onUpdate({ services: services.filter((_, i) => i !== index) });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Section Heading</label>
+        <input
+          type="text"
+          value={(content.heading as string) || ""}
+          onChange={(e) => onUpdate({ heading: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <label className="text-sm font-medium text-gray-700">Services</label>
+          <button
+            onClick={addService}
+            className="text-sm text-blue-600 hover:text-blue-700"
+          >
+            + Add Service
+          </button>
+        </div>
+        <div className="space-y-3 max-h-64 overflow-y-auto">
+          {services.map((service, index) => (
+            <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-xs text-gray-500">Service {index + 1}</span>
+                <button
+                  onClick={() => removeService(index)}
+                  className="text-red-500 hover:text-red-600 text-xs"
+                >
+                  Remove
+                </button>
+              </div>
+              <input
+                type="text"
+                value={service.name}
+                onChange={(e) => updateService(index, "name", e.target.value)}
+                placeholder="Service name"
+                className="w-full px-2 py-1 text-sm border border-gray-300 rounded mb-2 focus:ring-1 focus:ring-blue-500"
+              />
+              <textarea
+                value={service.description}
+                onChange={(e) => updateService(index, "description", e.target.value)}
+                placeholder="Description"
+                rows={2}
+                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+          ))}
+          {services.length === 0 && (
+            <p className="text-sm text-gray-500 text-center py-4">
+              No services added. Click &quot;+ Add Service&quot; to add one.
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Testimonials Block Editor
+function TestimonialsBlockEditor({
+  content,
+  onUpdate,
+}: {
+  content: Record<string, unknown>;
+  onUpdate: (content: Record<string, unknown>) => void;
+}) {
+  const testimonials = (content.testimonials as Array<{ name: string; text: string; rating: number }>) || [];
+
+  const addTestimonial = () => {
+    onUpdate({
+      testimonials: [...testimonials, { name: "", text: "", rating: 5 }],
+    });
+  };
+
+  const updateTestimonial = (index: number, field: string, value: string | number) => {
+    const updated = testimonials.map((t, i) =>
+      i === index ? { ...t, [field]: value } : t
+    );
+    onUpdate({ testimonials: updated });
+  };
+
+  const removeTestimonial = (index: number) => {
+    onUpdate({ testimonials: testimonials.filter((_, i) => i !== index) });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Section Heading</label>
+        <input
+          type="text"
+          value={(content.heading as string) || ""}
+          onChange={(e) => onUpdate({ heading: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <label className="text-sm font-medium text-gray-700">Testimonials</label>
+          <button
+            onClick={addTestimonial}
+            className="text-sm text-blue-600 hover:text-blue-700"
+          >
+            + Add Testimonial
+          </button>
+        </div>
+        <div className="space-y-3 max-h-64 overflow-y-auto">
+          {testimonials.map((testimonial, index) => (
+            <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-xs text-gray-500">Testimonial {index + 1}</span>
+                <button
+                  onClick={() => removeTestimonial(index)}
+                  className="text-red-500 hover:text-red-600 text-xs"
+                >
+                  Remove
+                </button>
+              </div>
+              <input
+                type="text"
+                value={testimonial.name}
+                onChange={(e) => updateTestimonial(index, "name", e.target.value)}
+                placeholder="Customer name"
+                className="w-full px-2 py-1 text-sm border border-gray-300 rounded mb-2 focus:ring-1 focus:ring-blue-500"
+              />
+              <textarea
+                value={testimonial.text}
+                onChange={(e) => updateTestimonial(index, "text", e.target.value)}
+                placeholder="Testimonial text"
+                rows={2}
+                className="w-full px-2 py-1 text-sm border border-gray-300 rounded mb-2 focus:ring-1 focus:ring-blue-500"
+              />
+              <div>
+                <label className="text-xs text-gray-600">Rating</label>
+                <div className="flex gap-1 mt-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => updateTestimonial(index, "rating", star)}
+                      className={`text-lg ${star <= testimonial.rating ? "text-yellow-400" : "text-gray-300"}`}
+                    >
+                      ★
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+          {testimonials.length === 0 && (
+            <p className="text-sm text-gray-500 text-center py-4">
+              No testimonials added. Click &quot;+ Add Testimonial&quot; to add one.
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Gallery Block Editor
+function GalleryBlockEditor({
+  content,
+  onUpdate,
+}: {
+  content: Record<string, unknown>;
+  onUpdate: (content: Record<string, unknown>) => void;
+}) {
+  const images = (content.images as Array<{ src: string; alt: string; caption?: string }>) || [];
+
+  const addImage = () => {
+    onUpdate({
+      images: [...images, { src: "", alt: "", caption: "" }],
+    });
+  };
+
+  const updateImage = (index: number, field: string, value: string) => {
+    const updated = images.map((img, i) =>
+      i === index ? { ...img, [field]: value } : img
+    );
+    onUpdate({ images: updated });
+  };
+
+  const removeImage = (index: number) => {
+    onUpdate({ images: images.filter((_, i) => i !== index) });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Columns</label>
+        <select
+          value={(content.columns as number) || 3}
+          onChange={(e) => onUpdate({ columns: parseInt(e.target.value, 10) })}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        >
+          <option value={2}>2 Columns</option>
+          <option value={3}>3 Columns</option>
+          <option value={4}>4 Columns</option>
+        </select>
+      </div>
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <label className="text-sm font-medium text-gray-700">Images</label>
+          <button
+            onClick={addImage}
+            className="text-sm text-blue-600 hover:text-blue-700"
+          >
+            + Add Image
+          </button>
+        </div>
+        <div className="space-y-3 max-h-64 overflow-y-auto">
+          {images.map((image, index) => (
+            <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-xs text-gray-500">Image {index + 1}</span>
+                <button
+                  onClick={() => removeImage(index)}
+                  className="text-red-500 hover:text-red-600 text-xs"
+                >
+                  Remove
+                </button>
+              </div>
+              <input
+                type="text"
+                value={image.src}
+                onChange={(e) => updateImage(index, "src", e.target.value)}
+                placeholder="Image URL"
+                className="w-full px-2 py-1 text-sm border border-gray-300 rounded mb-2 focus:ring-1 focus:ring-blue-500"
+              />
+              <input
+                type="text"
+                value={image.alt}
+                onChange={(e) => updateImage(index, "alt", e.target.value)}
+                placeholder="Alt text"
+                className="w-full px-2 py-1 text-sm border border-gray-300 rounded mb-2 focus:ring-1 focus:ring-blue-500"
+              />
+              <input
+                type="text"
+                value={image.caption || ""}
+                onChange={(e) => updateImage(index, "caption", e.target.value)}
+                placeholder="Caption (optional)"
+                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+          ))}
+          {images.length === 0 && (
+            <p className="text-sm text-gray-500 text-center py-4">
+              No images added. Click &quot;+ Add Image&quot; to add one.
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // Helper functions

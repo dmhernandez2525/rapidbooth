@@ -98,13 +98,28 @@ All API endpoints are prefixed with `/api`:
 | POST | `/api/sites/generate-direct` | Generate site from business data |
 | GET | `/api/sites/:id` | Get generated site config |
 | GET | `/api/sites` | List all generated sites |
-| POST | `/api/sites/:id/deploy` | Deploy generated site |
-| GET | `/api/dashboard/sessions` | List rep sessions |
-| GET | `/api/dashboard/analytics` | Dashboard analytics |
-| POST | `/api/billing/subscribe` | Create subscription |
-| GET | `/api/scheduling/slots` | Available time slots |
-| POST | `/api/scheduling/book` | Book appointment |
-| GET | `/api/reviews/:siteId` | Get aggregated reviews |
+| POST | `/api/deployments` | Deploy generated site |
+| GET | `/api/deployments/id/:id` | Get deployment status |
+| GET | `/api/dashboard/metrics` | Dashboard metrics |
+| GET | `/api/dashboard/pipeline` | Client pipeline stages |
+| GET | `/api/dashboard/revenue` | Revenue history |
+| POST | `/api/billing/subscriptions` | Create subscription |
+| GET | `/api/billing/invoices` | List invoices |
+| GET | `/api/scheduling/slots/:siteId/:date` | Available time slots |
+| POST | `/api/scheduling/bookings` | Create booking |
+| GET | `/api/reviews` | List reviews |
+| GET | `/api/reviews/stats/:siteId` | Review statistics |
+| GET | `/api/content/draft/:siteId` | Get content draft |
+| PUT | `/api/content/draft/:siteId` | Update draft (blocks, SEO, theme) |
+| POST | `/api/content/draft/:siteId/blocks` | Add content block |
+| PATCH | `/api/content/draft/:siteId/blocks/:id` | Update block content |
+| DELETE | `/api/content/draft/:siteId/blocks/:id` | Delete block |
+| POST | `/api/content/draft/:siteId/reorder` | Reorder blocks |
+| POST | `/api/content/draft/:siteId/publish` | Publish as new version |
+| GET | `/api/content/versions/:siteId` | Version history |
+| POST | `/api/content/versions/:siteId/:versionId/rollback` | Rollback to version |
+| POST | `/api/content/images/:siteId` | Upload image metadata |
+| GET | `/api/content/images/:siteId` | List images |
 
 ## Security
 
@@ -183,6 +198,43 @@ interface GeneratedSite {
   status: 'generating' | 'preview' | 'deployed' | 'archived';
   deployUrl?: string;
   createdAt: Date;
+}
+```
+
+### ContentBlock
+```typescript
+interface ContentBlock {
+  id: string;
+  type: ContentBlockType; // hero | text | image | gallery | services | testimonials | contact | cta | divider | spacer
+  content: Record<string, unknown>;
+  order: number;
+}
+```
+
+### SiteVersion
+```typescript
+interface SiteVersion {
+  id: string;
+  siteId: string;
+  version: number;
+  blocks: ContentBlock[];
+  seo: SEOSettings;
+  theme: { colors: ColorScheme; fontFamily?: string };
+  status: 'draft' | 'published';
+  createdAt: string;
+  publishedAt?: string;
+}
+```
+
+### SiteContentDraft
+```typescript
+interface SiteContentDraft {
+  siteId: string;
+  blocks: ContentBlock[];
+  seo: SEOSettings;
+  theme: { colors: ColorScheme; fontFamily?: string };
+  lastSaved: string;
+  hasUnsavedChanges: boolean;
 }
 ```
 
