@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: rapidbooth-web
+    name: rapidbooth-site
     runtime: static
     buildCommand: NODE_ENV=development npm ci && npm run build --workspace=@rapidbooth/shared && npm run build --workspace=@rapidbooth/web
     staticPublishPath: apps/web/out
