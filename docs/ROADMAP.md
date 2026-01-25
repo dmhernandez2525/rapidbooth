@@ -223,9 +223,51 @@ WYSIWYG page editor that allows business owners to update their sites without co
 
 ---
 
+---
+
+## Coming Soon: Voice-Based Client Intake
+
+**Powered by PersonaPlex Full Duplex AI**
+
+Transform the intake experience with natural voice conversation. Instead of typing responses, business owners simply talk while PersonaPlex guides them through the discovery process.
+
+### Current Experience
+```
+Rep types questions → Client dictates answers → Rep transcribes → AI generates site
+```
+
+### With PersonaPlex
+```
+Client: "We're a family-owned plumbing business..."
+PersonaPlex: "Got it, plumbing. How long have you been in business?"
+Client: "Since 1985, my dad started it..."
+PersonaPlex: "Nice, that's great heritage. What areas do you serve?"
+Client: "Mainly the Phoenix metro..."
+[Natural conversation continues, site builds in real-time on screen]
+```
+
+### Features
+
+| Feature | Priority | Description |
+|---------|----------|-------------|
+| Full Duplex Conversation | P0 | Talk naturally without waiting for responses |
+| Real-time Site Building | P1 | Site updates as client describes business |
+| Back-channeling | P1 | Active listening with "uh-huh", "got it" |
+| Smart Prompts | P1 | AI asks follow-up questions to fill gaps |
+| Accent Adaptation | P2 | Learns client's speaking patterns |
+| Multi-language | P2 | Support Spanish, French intake |
+
+### Technical Requirements
+
+- 24GB+ VRAM (Mac M2 Pro or higher)
+- 32GB RAM recommended
+- Runs 100% locally - no cloud required
+- <500ms response time
+
+---
+
 ## Future Considerations (Post-MVP)
 
-- Voice input support (Whisper/Fireflies.ai integration)
 - Offline-first iPad app for field sales
 - Google Business Profile sync
 - AI SEO assistant
