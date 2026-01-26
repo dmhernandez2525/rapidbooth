@@ -1,0 +1,14 @@
+name: rapidbooth
+
+services:
+  app:
+    build: .
+    ports:
+      - "3006:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/web/node_modules
+      - /app/apps/web/.next
+    environment:
+      - NODE_ENV=development
