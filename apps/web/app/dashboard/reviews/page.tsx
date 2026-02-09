@@ -196,12 +196,12 @@ export default function ReviewsPage() {
     <div className="pt-20 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h1 className="font-serif font-bold text-2xl text-slate-blue">Reviews</h1>
+            <h1 className="font-serif font-bold text-xl sm:text-2xl text-slate-blue">Reviews</h1>
             <p className="text-sm text-gray-500 mt-1">Manage and respond to customer reviews</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <select
               value={siteFilter}
               onChange={(e) => setSiteFilter(e.target.value)}
@@ -211,7 +211,7 @@ export default function ReviewsPage() {
               <option value="site_summit">Summit Plumbing</option>
               <option value="site_dental">Clearview Dental</option>
             </select>
-            <Link href="/dashboard" className="text-sm text-forest-green hover:underline">
+            <Link href="/dashboard" className="text-sm text-forest-green hover:underline hidden sm:inline">
               &larr; Dashboard
             </Link>
           </div>
@@ -235,7 +235,7 @@ export default function ReviewsPage() {
         {tab === "reviews" && (
           <>
             {/* Stats Summary */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 mb-6">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 text-center">
                 <p className="text-2xl font-bold text-forest-green">{stats.totalReviews}</p>
                 <p className="text-[10px] text-gray-500 mt-1">Total Reviews</p>

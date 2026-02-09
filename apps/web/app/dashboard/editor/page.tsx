@@ -356,32 +356,32 @@ export default function EditorPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="text-gray-500 hover:text-gray-700">
+      <header className="bg-white border-b border-gray-200 sticky top-16 sm:top-20 z-40">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <Link href="/dashboard" className="text-gray-500 hover:text-gray-700 flex-shrink-0 hidden sm:inline">
               ← Back
             </Link>
-            <h1 className="text-lg font-semibold text-gray-900">Content Editor</h1>
+            <h1 className="text-base sm:text-lg font-semibold text-gray-900 truncate">Content Editor</h1>
             {draft.hasUnsavedChanges && (
-              <span className="text-sm text-amber-600">• Unsaved changes</span>
+              <span className="text-xs sm:text-sm text-amber-600 flex-shrink-0">• Unsaved</span>
             )}
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-500">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <span className="text-xs sm:text-sm text-gray-500 hidden sm:inline">
               Last saved: {new Date(draft.lastSaved).toLocaleTimeString()}
             </span>
             <button
               onClick={saveDraft}
               disabled={isSaving || !draft.hasUnsavedChanges}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
             >
-              {isSaving ? "Saving..." : "Save Draft"}
+              {isSaving ? "Saving..." : "Save"}
             </button>
             <button
               onClick={publish}
               disabled={isPublishing}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
               {isPublishing ? "Publishing..." : "Publish"}
             </button>
@@ -389,10 +389,10 @@ export default function EditorPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
+      <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
           {/* Main Editor Area */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             {/* Tabs */}
             <div className="bg-white rounded-t-lg border border-b-0 border-gray-200">
               <nav className="flex">
@@ -429,7 +429,7 @@ export default function EditorPage() {
                   {showAddBlock && (
                     <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                       <p className="text-sm text-gray-600 mb-3">Select a block type to add:</p>
-                      <div className="grid grid-cols-5 gap-2">
+                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                         {BLOCK_TYPES.map((bt) => (
                           <button
                             key={bt.type}
@@ -666,7 +666,7 @@ export default function EditorPage() {
 
           {/* Block Editor Sidebar */}
           {selectedBlockData && activeTab === "blocks" && (
-            <div className="w-80 bg-white rounded-lg border border-gray-200 p-4 h-fit sticky top-20">
+            <div className="w-full lg:w-80 bg-white rounded-lg border border-gray-200 p-4 h-fit lg:sticky lg:top-36">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-medium text-gray-900 capitalize">
                   Edit {selectedBlockData.type}

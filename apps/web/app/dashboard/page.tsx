@@ -154,14 +154,14 @@ export default function DashboardPage() {
         </div>
 
         {/* Metrics Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 mb-6 sm:mb-8">
           <MetricCard label="Active Clients" value={metrics.activeClients} icon="users" color="green" />
           <MetricCard label="Monthly Revenue" value={`$${metrics.totalRevenue}`} icon="dollar" color="blue" />
           <MetricCard label="Conversion Rate" value={`${metrics.conversionRate}%`} icon="chart" color="amber" />
           <MetricCard label="Avg Session" value={`${metrics.avgSessionDuration}m`} icon="clock" color="purple" />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6 mb-6 sm:mb-8">
           {/* Pipeline */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-sm font-semibold text-gray-700 mb-4">Client Pipeline</h2>
@@ -221,15 +221,15 @@ export default function DashboardPage() {
 
         {/* Sessions Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h2 className="text-sm font-semibold text-gray-700">Sessions</h2>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <input
                 type="text"
                 placeholder="Search businesses..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-forest-green/20 focus:border-forest-green outline-none w-44"
+                className="flex-1 sm:flex-none px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-forest-green/20 focus:border-forest-green outline-none sm:w-44"
               />
               <select
                 value={statusFilter}

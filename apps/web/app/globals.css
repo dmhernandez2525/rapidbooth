@@ -52,4 +52,69 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Mobile bottom nav spacing */
+  .pb-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* Bottom sheet slide-up animation */
+@keyframes slideUpSheet {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDownSheet {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOutOverlay {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.animate-slide-up-sheet {
+  animation: slideUpSheet 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-down-sheet {
+  animation: slideDownSheet 0.2s ease-in forwards;
+}
+
+.animate-fade-overlay {
+  animation: fadeInOverlay 0.2s ease-out forwards;
+}
+
+.animate-fade-out-overlay {
+  animation: fadeOutOverlay 0.15s ease-in forwards;
+}
+
+/* Ensure main content doesn't hide behind the bottom nav on mobile */
+@media (max-width: 767px) {
+  main {
+    padding-bottom: 5rem;
+  }
+
+  footer {
+    padding-bottom: 5rem;
+  }
 }

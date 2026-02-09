@@ -305,14 +305,14 @@ export default function BuilderPage() {
   };
 
   return (
-    <div className="pt-16 h-screen flex flex-col bg-gray-50">
+    <div className="pt-16 sm:pt-20 h-screen flex flex-col bg-gray-50">
       {/* Phase Tracker */}
       <PhaseTracker currentPhase={session.currentPhase} phaseProgress={session.phaseProgress} />
 
       {/* Split Screen */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left: Chat */}
-        <div className="w-full lg:w-[400px] xl:w-[450px] flex flex-col border-r border-gray-200 bg-white">
+        <div className="w-full lg:w-[400px] xl:w-[450px] flex flex-col lg:border-r border-gray-200 bg-white">
           <div className="flex-1 overflow-y-auto px-4 py-4">
             <div className="space-y-3">
               {messages.map((message) => (

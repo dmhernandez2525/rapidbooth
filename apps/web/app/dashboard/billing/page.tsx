@@ -98,18 +98,18 @@ export default function BillingPage() {
     <div className="pt-20 min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 sm:mb-8">
           <div>
-            <h1 className="font-serif font-bold text-2xl text-slate-blue">Billing</h1>
+            <h1 className="font-serif font-bold text-xl sm:text-2xl text-slate-blue">Billing</h1>
             <p className="text-sm text-gray-500 mt-1">Subscription management and invoice history</p>
           </div>
-          <Link href="/dashboard" className="text-sm text-forest-green hover:underline">
+          <Link href="/dashboard" className="text-sm text-forest-green hover:underline hidden sm:inline">
             ← Dashboard
           </Link>
         </div>
 
         {/* Metrics */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 mb-6 sm:mb-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
             <p className="text-xs text-gray-500">Monthly Revenue</p>
             <p className="text-xl font-bold text-slate-blue">{formatAmount(metrics.mrr)}</p>
