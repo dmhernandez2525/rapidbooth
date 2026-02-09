@@ -42,15 +42,15 @@ export function CallToAction() {
           {/* Trust indicators */}
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 pt-10 border-t border-white/10">
             <div className="text-center">
-              <div className="text-3xl font-bold text-harvest-gold mb-1">30 min</div>
+              <div className="text-2xl sm:text-3xl font-bold text-harvest-gold mb-1">30 min</div>
               <div className="text-sm text-forest-green-200">Average build time</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-harvest-gold mb-1">$30/mo</div>
+              <div className="text-2xl sm:text-3xl font-bold text-harvest-gold mb-1">$30/mo</div>
               <div className="text-sm text-forest-green-200">All-inclusive pricing</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-harvest-gold mb-1">100%</div>
+              <div className="text-2xl sm:text-3xl font-bold text-harvest-gold mb-1">100%</div>
               <div className="text-sm text-forest-green-200">Content ownership</div>
             </div>
           </div>

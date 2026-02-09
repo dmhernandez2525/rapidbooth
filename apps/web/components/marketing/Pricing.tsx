@@ -25,7 +25,7 @@ export function Pricing() {
               </span>
             </div>
 
-            <div className="card border-2 border-forest-green p-8 sm:p-10">
+            <div className="card border-2 border-forest-green p-6 sm:p-8 lg:p-10">
               {/* Price */}
               <div className="text-center mb-8">
                 <h3 className="font-serif font-bold text-2xl text-slate-blue mb-2">

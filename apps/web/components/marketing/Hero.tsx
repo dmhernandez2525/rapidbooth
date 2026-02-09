@@ -97,7 +97,7 @@ export function Hero() {
               </div>
             </div>
             {/* Mockup Content */}
-            <div className="p-8 sm:p-12 bg-gradient-to-br from-forest-green-50 to-cream">
+            <div className="p-4 sm:p-8 lg:p-12 bg-gradient-to-br from-forest-green-50 to-cream">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
                   <div className="h-4 w-24 bg-forest-green/20 rounded mb-4" />

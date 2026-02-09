@@ -254,8 +254,8 @@ export default function DeployPage() {
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 sm:mb-8">
-          <div>
-            <h1 className="font-serif font-bold text-2xl text-slate-blue">Deployment</h1>
+          <div className="min-w-0">
+            <h1 className="font-serif font-bold text-xl sm:text-2xl text-slate-blue">Deployment</h1>
             <p className="text-sm text-gray-500 mt-1">{deployment.subdomain}.rapidbooth.com</p>
           </div>
           <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
@@ -283,7 +283,7 @@ export default function DeployPage() {
         {/* Pipeline Steps */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
           <h2 className="text-sm font-semibold text-gray-700 mb-4">Deployment Pipeline</h2>
-          <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto">
+          <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-2">
             {STATUS_STEPS.map((step, i) => {
               const state = getStepState(deployment.status, step.status);
               return (
@@ -332,7 +332,7 @@ export default function DeployPage() {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
           {/* Build Log */}
           <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between gap-2">
               <h2 className="text-sm font-semibold text-gray-700">Build Log</h2>
               <span className="text-xs text-gray-400">{deployment.buildLog.length} entries</span>
             </div>

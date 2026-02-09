@@ -83,19 +83,19 @@ export function ComingSoon() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
           <div className="text-center p-4">
-            <p className="text-2xl font-bold text-purple-300">&lt;500ms</p>
+            <p className="text-xl sm:text-2xl font-bold text-purple-300">&lt;500ms</p>
             <p className="text-xs text-purple-200/70">Response Time</p>
           </div>
           <div className="text-center p-4">
-            <p className="text-2xl font-bold text-purple-300">Full Duplex</p>
+            <p className="text-xl sm:text-2xl font-bold text-purple-300">Full Duplex</p>
             <p className="text-xs text-purple-200/70">Natural Conversation</p>
           </div>
           <div className="text-center p-4">
-            <p className="text-2xl font-bold text-purple-300">100%</p>
+            <p className="text-xl sm:text-2xl font-bold text-purple-300">100%</p>
             <p className="text-xs text-purple-200/70">Local Processing</p>
           </div>
           <div className="text-center p-4">
-            <p className="text-2xl font-bold text-purple-300">Hands-Free</p>
+            <p className="text-xl sm:text-2xl font-bold text-purple-300">Hands-Free</p>
             <p className="text-xs text-purple-200/70">Voice Control</p>
           </div>
         </div>

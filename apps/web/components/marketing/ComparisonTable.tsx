@@ -116,7 +116,7 @@ export function ComparisonTable() {
         </div>
 
         {/* Ownership callout */}
-        <div className="mt-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-forest-green/5 to-harvest-gold/5 border border-forest-green/10">
+        <div className="mt-12 p-4 sm:p-6 lg:p-8 rounded-2xl bg-gradient-to-r from-forest-green/5 to-harvest-gold/5 border border-forest-green/10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-forest-green/10 flex items-center justify-center flex-shrink-0">
               <svg className="w-6 h-6 text-forest-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
