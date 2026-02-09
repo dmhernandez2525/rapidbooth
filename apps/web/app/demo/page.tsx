@@ -266,14 +266,14 @@ export default function DemoPage() {
       {/* Site Generation CTA */}
       {session.currentPhase === "close" && messages.filter((m) => m.role === "user").length >= 14 && (
         <div className="bg-forest-green/5 border-t border-forest-green/20 px-4 py-4">
-          <div className="max-w-3xl mx-auto flex items-center justify-between">
+          <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
               <p className="text-sm font-medium text-forest-green">Intake complete!</p>
               <p className="text-xs text-slate-blue-500">Your website is ready to preview</p>
             </div>
             <Link
               href="/demo/preview"
-              className="inline-flex items-center px-5 py-2.5 rounded-lg bg-harvest-gold text-forest-green-900 font-semibold text-sm shadow hover:shadow-md hover:bg-harvest-gold-600 transition-all"
+              className="inline-flex items-center px-5 py-2.5 rounded-lg bg-harvest-gold text-forest-green-900 font-semibold text-sm shadow hover:shadow-md hover:bg-harvest-gold-600 transition-all w-full sm:w-auto justify-center"
             >
               View Your Site
               <svg className="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

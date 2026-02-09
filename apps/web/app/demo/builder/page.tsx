@@ -324,14 +324,14 @@ export default function BuilderPage() {
           </div>
           {session.currentPhase === "close" && userMessageCount.current >= 14 && (
             <div className="bg-forest-green/5 border-t border-forest-green/20 px-4 py-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <div>
                   <p className="text-sm font-medium text-forest-green">Ready to go live?</p>
                   <p className="text-xs text-gray-500">Deploy your site in one click</p>
                 </div>
                 <Link
                   href="/demo/deploy"
-                  className="inline-flex items-center px-4 py-2 rounded-lg bg-forest-green text-white font-semibold text-sm shadow hover:bg-forest-green-800 transition-colors"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-forest-green text-white font-semibold text-sm shadow hover:bg-forest-green-800 transition-colors w-full sm:w-auto justify-center"
                 >
                   Deploy Site
                   <svg className="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

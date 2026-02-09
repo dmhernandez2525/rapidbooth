@@ -57,13 +57,13 @@ export default function PricingPage() {
       <section className="section-padding bg-white -mt-8">
         <div className="container-narrow">
           <div className="max-w-2xl mx-auto">
-            <div className="card border-2 border-forest-green p-8 sm:p-12">
+            <div className="card border-2 border-forest-green p-6 sm:p-8 lg:p-12">
               <div className="text-center mb-10">
                 <h2 className="font-serif font-bold text-2xl text-slate-blue mb-4">
                   Professional Plan
                 </h2>
                 <div className="flex items-baseline justify-center gap-1 mb-2">
-                  <span className="text-6xl sm:text-7xl font-bold text-forest-green">$30</span>
+                  <span className="text-5xl sm:text-6xl lg:text-7xl font-bold text-forest-green">$30</span>
                   <span className="text-xl text-slate-blue-400">/month</span>
                 </div>
                 <p className="text-slate-blue-400">
@@ -123,7 +123,7 @@ export default function PricingPage() {
             </h2>
           </div>
 
-          <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-cream-200 p-6 sm:p-8">
+          <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-cream-200 p-4 sm:p-6 lg:p-8">
             {FAQ_ITEMS.map((item) => (
               <FAQItem key={item.question} question={item.question} answer={item.answer} />
             ))}

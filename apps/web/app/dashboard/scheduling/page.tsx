@@ -223,7 +223,7 @@ export default function SchedulingPage() {
                 </h3>
                 <div className="space-y-2">
                   {todayBookings.map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={booking.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className="text-center">
                           <p className="text-xs font-bold text-gray-700">{booking.startTime}</p>

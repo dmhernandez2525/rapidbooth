@@ -206,7 +206,7 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-4 flex items-center gap-6 border-t border-gray-100 pt-3">
+            <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 border-t border-gray-100 pt-3">
               <div>
                 <p className="text-xs text-gray-500">Total Revenue</p>
                 <p className="text-lg font-bold text-slate-blue">${revenue.reduce((sum, r) => sum + r.revenue, 0)}</p>

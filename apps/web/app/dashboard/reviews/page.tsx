@@ -218,7 +218,7 @@ export default function ReviewsPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-6 bg-white rounded-lg p-1 shadow-sm border border-gray-200 w-fit">
+        <div className="flex gap-1 mb-6 bg-white rounded-lg p-1 shadow-sm border border-gray-200 w-full sm:w-fit overflow-x-auto">
           {(["reviews", "analytics", "requests"] as const).map((t) => (
             <button
               key={t}
@@ -463,7 +463,7 @@ export default function ReviewsPage() {
             {/* Response Rate */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 lg:col-span-2">
               <h3 className="text-sm font-semibold text-gray-700 mb-3">Response Metrics</h3>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-forest-green">{stats.responseRate}%</p>
                   <p className="text-[10px] text-gray-500">Response Rate</p>
@@ -519,7 +519,7 @@ export default function ReviewsPage() {
               <div className="space-y-3">
                 <div>
                   <label className="text-xs font-medium text-gray-600">Display Layout</label>
-                  <div className="grid grid-cols-4 gap-2 mt-1">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-1">
                     {(["carousel", "grid", "list", "masonry"] as const).map((layout) => (
                       <button
                         key={layout}
