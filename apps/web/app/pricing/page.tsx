@@ -94,7 +94,7 @@ export default function PricingPage() {
           </div>
 
           {/* Value comparison */}
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-12 sm:mt-16 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
             <div className="text-center p-6 rounded-xl bg-cream">
               <div className="text-sm text-slate-blue-400 mb-2">Custom Web Agency</div>
               <div className="text-2xl font-bold text-slate-blue line-through decoration-red-400">$3,000-5,000</div>

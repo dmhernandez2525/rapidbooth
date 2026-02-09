@@ -251,9 +251,9 @@ export default function DeployPage() {
   // Deployment status screen
   return (
     <div className="pt-20 min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 sm:mb-8">
           <div>
             <h1 className="font-serif font-bold text-2xl text-slate-blue">Deployment</h1>
             <p className="text-sm text-gray-500 mt-1">{deployment.subdomain}.rapidbooth.com</p>
@@ -281,9 +281,9 @@ export default function DeployPage() {
         </div>
 
         {/* Pipeline Steps */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
           <h2 className="text-sm font-semibold text-gray-700 mb-4">Deployment Pipeline</h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto">
             {STATUS_STEPS.map((step, i) => {
               const state = getStepState(deployment.status, step.status);
               return (
@@ -329,14 +329,14 @@ export default function DeployPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
           {/* Build Log */}
           <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
               <h2 className="text-sm font-semibold text-gray-700">Build Log</h2>
               <span className="text-xs text-gray-400">{deployment.buildLog.length} entries</span>
             </div>
-            <div className="max-h-80 overflow-y-auto p-4 bg-gray-900 font-mono text-xs">
+            <div className="max-h-60 sm:max-h-80 overflow-y-auto p-3 sm:p-4 bg-gray-900 font-mono text-[10px] sm:text-xs">
               {deployment.buildLog.map((entry, i) => (
                 <div key={i} className="flex gap-3 py-1">
                   <span className="text-gray-500 whitespace-nowrap">

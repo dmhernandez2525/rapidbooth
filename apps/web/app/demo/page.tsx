@@ -245,7 +245,7 @@ export default function DemoPage() {
   }
 
   return (
-    <div className="pt-16 sm:pt-20 min-h-screen bg-cream flex flex-col">
+    <div className="pt-16 sm:pt-20 min-h-screen bg-cream flex flex-col pb-16 md:pb-0">
       {/* Phase Tracker */}
       <PhaseTracker
         currentPhase={session.currentPhase}
