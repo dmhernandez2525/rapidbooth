@@ -1,0 +1,56 @@
+# Multi-stage build for rapidbooth-api targeting AWS ECS Fargate.
+# Builds @rapidbooth/shared then @rapidbooth/api, copies only api runtime
+# into a slim final image.
+
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim AS deps
+WORKDIR /app
+
+# Workspace manifests only (max cache reuse)
+COPY package.json package-lock.json ./
+COPY apps/api/package.json ./apps/api/package.json
+COPY packages/shared/package.json ./packages/shared/package.json
+# web app manifest is needed so npm resolves the workspaces graph; its deps
+# get pruned for the api runtime image at the end.
+COPY apps/web/package.json ./apps/web/package.json
+
+RUN npm ci --ignore-scripts --include=dev
+
+# ---------- builder ----------
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim AS builder
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+
+# Bring in only the source we need to compile.
+COPY package.json package-lock.json tsconfig.json turbo.json ./
+COPY apps/api ./apps/api
+COPY packages/shared ./packages/shared
+
+# Build shared first (api depends on its dist/), then api.
+RUN npm run build --workspace=@rapidbooth/shared \
+ && npm run build --workspace=@rapidbooth/api
+
+# Drop dev dependencies in the workspaces we care about for the runtime layer.
+RUN npm prune --omit=dev --workspace=@rapidbooth/api --workspace=@rapidbooth/shared
+
+# ---------- runtime ----------
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim AS runtime
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Hoisted root node_modules (express, cors, helmet, etc. live here under npm workspaces).
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json ./package-lock.json
+
+# Workspace runtimes (compiled dist + package.json + any local node_modules npm placed).
+COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
+COPY --from=builder /app/apps/api/dist ./apps/api/dist
+COPY --from=builder /app/packages/shared/package.json ./packages/shared/package.json
+COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
+
+EXPOSE 3000
+
+CMD ["node", "apps/api/dist/index.js"]

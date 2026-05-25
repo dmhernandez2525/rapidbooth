@@ -19,6 +19,17 @@ app.use(generalLimiter);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+// ALB / platform health check (matches infra health_path = "/health")
+app.get("/health", (_req, res) => {
+  res.json({
+    status: "healthy",
+    service: "rapidbooth-api",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development",
+  });
+});
+
 // Routes
 app.use("/api", routes);
 
